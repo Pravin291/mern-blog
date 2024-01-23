@@ -9,8 +9,11 @@ import Projects from './pages/Projects'
 import Header from './components/Header'
 import SignIn from './pages/SignIn'
 import Footer from './components/Footer'
+import { useSelector } from 'react-redux'
 export default function App() {
+  
   return (
+    
     <BrowserRouter>
     <Header/>
     <Routes>
@@ -23,5 +26,6 @@ export default function App() {
     </Routes>
     <Footer/>
     </BrowserRouter>
+    
   )
 }
