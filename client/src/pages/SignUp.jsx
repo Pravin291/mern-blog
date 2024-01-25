@@ -43,7 +43,7 @@ export default function SignUp() {
       <div className="flex p-3 max-w-3xl mx-auto flex-col md:flex-row md:items-center gap-5">
         <div className="flex-1 ">
           <img
-            className="h-auto max-w-sm"
+            className="max-w-sm sm:mx-auto"
             src={img1} 
             alt="Blog Logo"
             

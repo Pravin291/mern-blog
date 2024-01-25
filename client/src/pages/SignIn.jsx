@@ -53,8 +53,8 @@ export default function SignIn() {
           <img
             src={img1}
             alt="Blog Logo"
-            className="mr-2" // Adjust the margin as needed
-            style={{ width: "326px", height: "auto", marginRight: "-1rem" }} // Adjust the size as needed
+            className="max-w-sm sm:mx-auto" // Adjust the margin as needed
+             // Adjust the size as needed
           />
           {/* <Link to="/" className="font-bold dark:text-white text-xl">
             <span className="px-2 py-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-lg text-white text-4xl">
