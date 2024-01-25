@@ -15,14 +15,15 @@ import {
   deleteUserStart,
   deleteUserSuccess,
   deleteUserFailure,
-  signoutSuccess
+  signoutSuccess,
 } from "../redux/user/userSlice";
 import "react-circular-progressbar/dist/styles.css";
 import { app } from "../firebase";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
+import { Link } from "react-router-dom";
 
 export default function DashProfile() {
-  const { currentUser ,error} = useSelector((state) => state.user);
+  const { currentUser, error, loading } = useSelector((state) => state.user);
   const [imageFile, setImageFile] = useState(null);
   const [imageFileUrl, setImageFileUrl] = useState(null);
   const [imageFileUploadingProgress, setImageFileUploadingProgress] =
@@ -132,37 +133,35 @@ export default function DashProfile() {
     setshowModal(false);
     try {
       dispatch(deleteUserStart());
-      const res = await fetch(`/api/user/delete/${currentUser._id}`,{
-        method:'DELETE',
-      })
+      const res = await fetch(`/api/user/delete/${currentUser._id}`, {
+        method: "DELETE",
+      });
       const data = await res.json();
-      if(!res.ok){
+      if (!res.ok) {
         dispatch(deleteUserFailure(data.message));
-      }
-      else{
-        dispatch(deleteUserSuccess(data))
+      } else {
+        dispatch(deleteUserSuccess(data));
       }
     } catch (error) {
-      dispatch(deleteUserFailure(error.message))
+      dispatch(deleteUserFailure(error.message));
     }
   };
 
-  const handleSignout = async()=>{
-      try {
-        const res = await fetch('/api/user/signout',{
-          method:'POST'
-        })
-        const data = await res.json()
-        if(!res.ok){
-          console.log(data.message)
-        }
-        else{
-             dispatch(signoutSuccess())
-        }
-      } catch (error) {
-        console.log(error.message)
+  const handleSignout = async () => {
+    try {
+      const res = await fetch("/api/user/signout", {
+        method: "POST",
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        console.log(data.message);
+      } else {
+        dispatch(signoutSuccess());
       }
-  }
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
   return (
     <div className="max-w-lg mx-auto p-3 w-full">
       <h1 className="my-7 text-center font-semibold text-3xl">Profile</h1>
@@ -204,7 +203,7 @@ export default function DashProfile() {
             src={imageFileUrl || currentUser.profilePicture}
             alt="user"
             className="rounded-full w-full h-full object-cover border-8 border-[lightgray]"
-            style={{ opacity: imageFileUploadingProgress < 100 ? 0.6 : 1 }}
+            // style={{ opacity: imageFileUploadingProgress < 100 ? 0.6 : 1 }}
           />
         </div>
         {imageFileUploadError && (
@@ -230,15 +229,33 @@ export default function DashProfile() {
           placeholder="password"
           onChange={handleChange}
         />
-        <Button type="submit" gradientDuoTone={"purpleToBlue"} outline>
-          Update
+        <Button
+          type="submit"
+          gradientDuoTone={"purpleToBlue"}
+          outline
+          disabled={loading || imageFileUploading}
+        >
+          {loading ? 'Loading...': 'Update'}
         </Button>
+        {currentUser.isAdmin && (
+          <Link to={"/create-post"}>
+            <Button
+              type="button"
+              gradientDuoTone={"purpleToPink"}
+              className="w-full"
+            >
+              Create a Post
+            </Button>
+          </Link>
+        )}
       </form>
       <div className=" text-red-500 flex justify-between mt-5">
         <span onClick={() => setshowModal(true)} className="cursor-pointer">
           Delete Account
         </span>
-        <span onClick={handleSignout} className="cursor-pointer">Sign Out</span>
+        <span onClick={handleSignout} className="cursor-pointer">
+          Sign Out
+        </span>
       </div>
       {updateUserSuccess && (
         <Alert color={"success"} className="mt-5">
@@ -250,7 +267,7 @@ export default function DashProfile() {
           {updateUserError}
         </Alert>
       )}
-        {error && (
+      {error && (
         <Alert color={"failure"} className="mt-5">
           {error}
         </Alert>
@@ -272,7 +289,9 @@ export default function DashProfile() {
               <Button color="failure" onClick={handleDeleteUser}>
                 Yes,I'm sure
               </Button>
-              <Button color="gray" onClick={()=>setshowModal(false)}>No,cancel</Button>
+              <Button color="gray" onClick={() => setshowModal(false)}>
+                No,cancel
+              </Button>
             </div>
           </div>
         </Modal.Body>
