@@ -50,7 +50,21 @@ export default function DashUsers() {
   };
 
    const handleDeleteUser= async () => {
-
+    
+    try {
+      const res = await fetch(`/api/user/delete/${userIdToDelete}`, {
+          method: 'DELETE',
+      });
+      const data = await res.json();
+      if (res.ok) {
+          setUsers((prev) => prev.filter((user) => user._id !== userIdToDelete));
+          setShowModal(false);
+      } else {
+          console.log(data.message);
+      }
+  } catch (error) {
+      console.log(error.message);
+  }
    };
   
   return (
@@ -128,7 +142,7 @@ export default function DashUsers() {
           <div className='text-center'>
             <HiOutlineExclamationCircle className='h-14 w-14 text-gray-400 dark:text-gray-200 mb-4 mx-auto' />
             <h3 className='mb-5 text-lg text-gray-500 dark:text-gray-400'>
-              Are you sure you want to delete the user ?
+              Are you sure you want to delete this user ?
             </h3>
             <div className='flex justify-center gap-4'>
               <Button color='failure' onClick={handleDeleteUser}>
